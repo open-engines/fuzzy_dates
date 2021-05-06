@@ -62,4 +62,4 @@ MIT
 Authors
 -------
 
-`fuzzy_dates` was written by `Open Engines<openengines@protonmail.com>`
+`fuzzy_dates` is maintained by `Conrado M. Rodriguez conrado.rgz@gmail.com`
