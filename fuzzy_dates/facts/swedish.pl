@@ -6,13 +6,13 @@
 adverb(swedish, 'Idag', Date, Date).
 adverb(swedish, 'Imorgon', Date, Tomorrow) :- date_add(Date, days(1), Tomorrow).
 
-dayName(swedish, 1, måndag).
-dayName(swedish, 2, tisdag).
-dayName(swedish, 3, onsdag).
-dayName(swedish, 4, torsdag).
-dayName(swedish, 5, fredag).
-dayName(swedish, 6, lördag).
-dayName(swedish, 7, söndag).
+dayName(swedish, 1, 'Måndag').
+dayName(swedish, 2, 'Tisdag').
+dayName(swedish, 3, 'Onsdag').
+dayName(swedish, 4, 'Torsdag').
+dayName(swedish, 5, 'Fredag').
+dayName(swedish, 6, 'Lördag').
+dayName(swedish, 7, 'Söndag').
 
 month(swedish, 1, januari).
 month(swedish, 2, februari).

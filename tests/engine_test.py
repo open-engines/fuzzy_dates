@@ -14,9 +14,17 @@ class TestEngine(TestCase):
         self._validate([date(2021, 1, 1)], semantic)
         self._validate(['adverb(french)'], syntax)
 
-    def test_single_explicit_week_day_and_abbreviated_month(self):
+    def test_single_explicit_week_day_and_month(self):
         """
-        Single explicit week day and abbreviated month
+        Single explicit week day and month
+        """
+        semantic, syntax = Engine(datetime(2021, 4, 27).date()).when('Tisdag, 18 maj')
+        self._validate([date(2021, 5, 18)], semantic)
+        self._validate(['sd(wd(swedish), dm(explicit(swedish)))'], syntax)
+
+    def test_single_explicit_week_day_and_day_dot(self):
+        """
+        Single explicit week day and day dot
         """
         semantic, syntax = Engine(datetime(2021, 4, 27).date()).when('Freitag, 7. Mai')
         self._validate([date(2021, 5, 7)], semantic)
