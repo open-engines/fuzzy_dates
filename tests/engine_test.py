@@ -1,7 +1,7 @@
 from unittest import TestCase
 from datetime import datetime, date
 
-from fuzzy_dates.engine import Engine
+from fuzzy_parser.engine import Engine
 
 
 class TestEngine(TestCase):

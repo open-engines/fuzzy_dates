@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="fuzzy_parser",
-    version="0.2.23",
+    version="0.2.24",
     description="A parser for fuzzy dates",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -28,7 +28,7 @@ setup(
     install_requires=["pytest", "pyswip"],
     entry_points={
         "console_scripts": [
-            "fuzzy_dates=fuzzy_dates.__main__:main",
+            "fuzzy_parser=fuzzy_parser.__main__:main",
         ]
     }
 )

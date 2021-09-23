@@ -1,6 +1,6 @@
 import sys
 
-from fuzzy_dates.engine import Engine
+from fuzzy_parser.engine import Engine
 
 
 def main(args=None):

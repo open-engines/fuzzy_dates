@@ -17,10 +17,10 @@ class Engine:
         :param time_expression:
         :return:
         """
-        return next(iter([solution for solution in (self._parse_fuzzy_dates(self, time_expression))]), ([], []))
+        return next(iter([solution for solution in (self._parse_fuzzy_parser(self, time_expression))]), ([], []))
 
     @staticmethod
-    def _parse_fuzzy_dates(self, time_expression):
+    def _parse_fuzzy_parser(self, time_expression):
         dates, trace = Variable(), Variable()
         query = Query(Functor("parse", 4)(self.context, time_expression,  dates, trace))
         while query.nextSolution():
