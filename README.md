@@ -8,15 +8,9 @@ Usage
 From the Command Line type:
 
 ```bash
-python3 -m fuzzy_parser '21 juin - 9 juil.'
-```
-
-Or using PrologScript:
-
-```bash
-./parser/main.pl '21 juin - 9 juil.'
-[date(2021,6,21),date(2021,7,9)]
-[dm(explicit(french)),dm(explicit(french))]
+python3 -m fuzzy_parser '21 Juin - 9 Juil.'
+[datetime.date(2022, 6, 21), datetime.date(2022, 7, 9)]
+['dm(explicit(French))', 'dm(abbreviated(French))']
 ```
 
 Installation
