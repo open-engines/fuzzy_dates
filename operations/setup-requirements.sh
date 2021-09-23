@@ -17,11 +17,11 @@ if [ ! $? = 0 ] || [ ! "$status" = installed ]; then
   sudo apt install $pkg
 fi
 
-test=`swipl -g "pack_list_installed()"  -t halt| grep date_time`
+test=`swipl -g "pack_list_installed()"  -t halt| grep abbreviated_dates`
 if [ -z "$test" ]
 then
-  echo "\n$(tput setaf 6)Install Swi-Prolog date_time package$(tput sgr0)\n"
-  swipl -g "pack_install(date_time, [interactive(false)])"  -t halt
+  echo "\n$(tput setaf 6)Install Swi-Prolog abbreviated_dates package$(tput sgr0)\n"
+  swipl -g "pack_install(abbreviated_dates, [interactive(false)])"  -t halt
 fi
 
 echo "$(tput setaf 6)Done!$(tput sgr0)"

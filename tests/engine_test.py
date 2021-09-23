@@ -10,17 +10,17 @@ class TestEngine(TestCase):
         """
         An adverb
         """
-        (semantic, syntax) = Engine(datetime(2021, 1, 1).date()).when('aujourd\'hui')
+        (semantic, syntax) = Engine(datetime(2021, 1, 1).date()).when('Aujourd\'hui')
         self._validate([date(2021, 1, 1)], semantic)
-        self._validate(['adverb(french)'], syntax)
+        self._validate(['adverb(French)'], syntax)
 
     def test_single_explicit_week_day_and_month(self):
         """
         Single explicit week day and month
         """
-        semantic, syntax = Engine(datetime(2021, 4, 27).date()).when('Tisdag, 18 maj')
+        semantic, syntax = Engine(datetime(2021, 4, 27).date()).when('Tisdag, 18 Maj')
         self._validate([date(2021, 5, 18)], semantic)
-        self._validate(['sd(wd(swedish), dm(explicit(swedish)))'], syntax)
+        self._validate(['sd(wd(Swedish), dm(explicit(Danish)))'], syntax)
 
     def test_single_explicit_week_day_and_day_dot(self):
         """
@@ -28,7 +28,7 @@ class TestEngine(TestCase):
         """
         semantic, syntax = Engine(datetime(2021, 4, 27).date()).when('Freitag, 7. Mai')
         self._validate([date(2021, 5, 7)], semantic)
-        self._validate(['sd(wd(german), dm(explicit(german)))'], syntax)
+        self._validate(['sd(wd(German), dm(explicit(French)))'], syntax)
 
     def test_explicit_post_fixed_months_and_abbreviations(self):
         """
@@ -36,15 +36,15 @@ class TestEngine(TestCase):
         """
         (semantic, syntax) = Engine(datetime(2021, 4, 27).date()).when('28. Aug. - 1. Sept.')
         self._validate([date(2021, 8, 28), date(2021, 9, 1)], semantic)
-        self._validate(['dm(abbreviated(german))', 'dm(abbreviated(german))'], syntax)
+        self._validate(['dm(abbreviated(Danish))', 'dm(abbreviated(Danish))'], syntax)
 
     def test_explicit_post_fixed_months_without_abbreviations(self):
         """
         Explicit post-fixed months without abbreviations
         """
-        (semantic, syntax) = Engine(datetime(2021, 4, 27).date()).when('21 juin - 9 juil')
+        (semantic, syntax) = Engine(datetime(2021, 4, 27).date()).when('21 Juin - 9 Juil.')
         self._validate([date(2021, 6, 21), date(2021, 7, 9)], semantic)
-        self._validate(['dm(explicit(french))', 'dm(explicit(french))'], syntax)
+        self._validate(['dm(explicit(French))', 'dm(abbreviated(French))'], syntax)
 
     def test_implicit_start_month_and_abbreviated_end(self):
         """
@@ -52,7 +52,7 @@ class TestEngine(TestCase):
         """
         semantic, syntax = Engine(datetime(2021, 4, 27).date()).when('12. - 14. Aug.')
         self._validate([date(2021, 5, 12), date(2021, 8, 14)], semantic)
-        self._validate(['d(unknown)', 'dm(abbreviated(german))'], syntax)
+        self._validate(['d(unknown)', 'dm(abbreviated(Danish))'], syntax)
 
     def test_implicit_start_month_and_post_fixed_explicit_end(self):
         """
@@ -60,40 +60,40 @@ class TestEngine(TestCase):
         """
         semantic, syntax = Engine(datetime(2021, 4, 27).date()).when('12 - 14 Mai')
         self._validate([date(2021, 5, 12), date(2021, 5, 14)], semantic)
-        self._validate(['d(unknown)', 'dm(explicit(german))'], syntax)
+        self._validate(['d(unknown)', 'dm(explicit(French))'], syntax)
 
     def test_post_fixed_start_month_and_implicit_end(self):
         """
         Post-fixed start month and implicit end
         """
-        semantic, syntax = Engine(datetime(2021, 4, 27).date()).when('21 juin - 9')
+        semantic, syntax = Engine(datetime(2021, 4, 27).date()).when('21 Juin - 9')
         self._validate([date(2021, 6, 21), date(2021, 7, 9)], semantic)
-        self._validate(['dm(explicit(french))', 'd(unknown)'], syntax)
+        self._validate(['dm(explicit(French))', 'd(unknown)'], syntax)
 
     # Time Machine Tests
     def test_present_prefixed_start_month_and_implicit_end(self):
         """
         Prefixed start month and implicit end
         """
-        (semantic, syntax) = Engine(datetime(2021, 5, 6).date()).when('maj 6 - 14')
+        (semantic, syntax) = Engine(datetime(2021, 5, 6).date()).when('Maj 6 - 14')
         self._validate([date(2021, 5, 6), date(2021, 5, 14)], semantic)
-        self._validate(['md(explicit(swedish))', 'd(unknown)'], syntax)
+        self._validate(['md(explicit(Danish))', 'd(unknown)'], syntax)
 
     def test_future_prefixed_start_month_and_implicit_end(self):
         """
         Prefixed start month and implicit end
         """
-        (semantic, syntax) = Engine(datetime(2021, 5, 5).date()).when('maj 6 - 14')
+        (semantic, syntax) = Engine(datetime(2021, 5, 5).date()).when('Maj 6 - 14')
         self._validate([date(2021, 5, 6), date(2021, 5, 14)], semantic)
-        self._validate(['md(explicit(swedish))', 'd(unknown)'], syntax)
+        self._validate(['md(explicit(Danish))', 'd(unknown)'], syntax)
 
     def test_past_prefixed_start_month_and_implicit_end(self):
         """
         Past prefixed start month and implicit end
         """
-        (semantic, syntax) = Engine(datetime(2021, 4, 27).date()).when('januari 1 - 14')
+        (semantic, syntax) = Engine(datetime(2021, 4, 27).date()).when('Januari 1 - 14')
         self._validate([date(2022, 1, 1), date(2022, 1, 14)], semantic)
-        self._validate(['md(explicit(swedish))', 'd(unknown)'], syntax)
+        self._validate(['md(explicit(Dutch))', 'd(unknown)'], syntax)
 
     def _validate(self, expected, actual):
         self.assertEqual(expected, actual, 'expected value {0} actual value {1}'.format(expected, actual))
