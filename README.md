@@ -3,7 +3,7 @@
 fuzzy_parser
 ============
 
-A minimal parser for Fuzzy Dates
+A minimal parser for Multilanguage Incomplete & Abbreviated Dates 
 
 Usage
 -----
