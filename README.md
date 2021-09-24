@@ -30,7 +30,7 @@ Uninstall with:
 ```
 
 Requirements
-^^^^^^^^^^^^
+------------
 
 Setup Requirements with:
 ```bash
