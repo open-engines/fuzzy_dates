@@ -1,4 +1,4 @@
-<img src=".github/World-Flag-Buttons-Globe.svg?raw=true" width="30%" align="right" style="border:20px solid white">
+<img src=".github/World-Flag-Buttons-Globe.svg?raw=true" width="40%" align="right" style="border:20px solid white">
 
 fuzzy_parser
 ============
