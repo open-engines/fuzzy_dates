@@ -24,7 +24,7 @@ fi
 step="Install Swi-Prolog abbreviated_dates package"
 if [ "$(swipl -g "pack_list_installed()" -t halt | grep -c abbreviated_dates)" = 0 ]; then
   printf "\n\e[1;36m%s\e[0m\n\n" "$step"
-  swipl -g "pack_install(abbreviated_dates, [interactive(false)])"  -t halt
+  swipl -g "O=[interactive(false),silent(true)],pack_install(date_time,O),pack_install(abbreviated_dates,O)"  -t halt
 fi
 
 printf "\e[1;36m%s\e[0m\n" "Done!"
