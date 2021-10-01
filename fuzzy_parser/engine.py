@@ -1,30 +1,30 @@
-from pyswip import Prolog, Query, Functor, Variable
+from pyswip import Prolog
 from datetime import date
 
 
 class Engine:
-    """
 
+    """
+    A minimal parser for Multilingual Incomplete & Abbreviated Dates
     """
 
     def __init__(self, context=date.today()):
-        self.context = Functor("date", 3)(context.year, context.month, context.day)
-        next(Prolog().query("use_module(library(abbreviated_dates))"))
+        self.context = context.strftime('date(%Y,%m,%d)')
+        self.prolog = Prolog()
+        next(self.prolog.query("use_module(library(abbreviated_dates))"))
 
     def when(self, time_expression: str):
         """
-        Explore all possible solutions to exhaust the generator bellow and close the query
-        :param time_expression:
-        :return:
+        Explore all possible solutions
+        :param time_expression: a time expression in a natural language
+        :return: a solution or an empty list
         """
-        return next(iter([solution for solution in (self._parse_fuzzy_parser(self, time_expression))]), ([], []))
+        escaped_quotes = time_expression.replace("'", "''")
+        query = self.prolog.query(f"parse({self.context}, '{escaped_quotes}', Date, Trace)")
+        return next(iter([self.transform(solution) for solution in query]), ([], []))
 
     @staticmethod
-    def _parse_fuzzy_parser(self, time_expression):
-        dates, trace = Variable(), Variable()
-        query = Query(Functor("parse", 4)(self.context, time_expression,  dates, trace))
-        while query.nextSolution():
-            semantic = [eval(period.value, {'date': date}) for period in dates.value]
-            syntax = [trace.value for trace in trace.value]
-            yield semantic, syntax
-        query.closeQuery()
+    def transform(solution):
+        semantic = [eval(period.value, {'date': date}) for period in solution["Date"]]
+        syntax = [trace.value for trace in solution["Trace"]]
+        return semantic, syntax

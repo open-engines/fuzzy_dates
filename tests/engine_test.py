@@ -10,9 +10,17 @@ class TestEngine(TestCase):
         """
         An adverb
         """
-        (semantic, syntax) = Engine(datetime(2021, 1, 1).date()).when('Aujourd\'hui')
+        (semantic, syntax) = Engine(datetime(2021, 1, 1).date()).when("Aujourd'hui")
         self._validate([date(2021, 1, 1)], semantic)
         self._validate(['adverb(French)'], syntax)
+
+    def test_single_abbreviated_week_day_and_month_utf_8(self):
+        """
+        Single explicit week day and month using UTF-8
+        """
+        semantic, syntax = Engine(datetime(2021, 4, 27).date()).when('7 PAŹ')
+        self._validate([date(2021, 10, 7)], semantic)
+        self._validate(['dm(abbreviated(Polish))'], syntax)
 
     def test_single_explicit_week_day_and_month(self):
         """
