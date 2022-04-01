@@ -1,6 +1,6 @@
 <img src=".github/flags-jakearchibald.github.io-scour.svg?raw=true" width="50%" align="right" style="border:20px solid white">
 
-fuzzy_parser
+fuzzy_dates
 ============
 
 A minimal parser for Multilingual Incomplete & Abbreviated Dates 
@@ -20,13 +20,13 @@ Installation
 Install with:
 
 ```bash
-  pip3 install fuzzy_parser
+  pip3 install fuzzy_dates
 ```
 
 Uninstall with:
 
 ```bash
-  pip3 uninstall -y fuzzy_parser
+  pip3 uninstall -y fuzzy_dates
 ```
 
 Requirements
