@@ -1,5 +1,3 @@
-<img src=".github/flags-jakearchibald.github.io-scour.svg?raw=true" width="50%" align="right" style="border:20px solid white">
-
 fuzzy_dates
 ============
 
