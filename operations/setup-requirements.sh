@@ -1,27 +1,30 @@
 #!/bin/sh
 
-# The PPA is registered using apt-add-repository, which is by default available on desktops, but not on servers or Linux
-# containers. It is installed using:
-
+step="Install software-properties-common for adding and removing PPAs"
 pkg=software-properties-common
-status="$(dpkg-query -W --showformat='${db:Status-Status}' "$pkg" 2>&1)"
-if [ ! $? = 0 ] || [ ! "$status" = installed ]; then
-  echo "\n$(tput setaf 6)Install software-properties-common for adding and removing PPAs$(tput sgr0)\n"
+if [ ! "$(dpkg-query -W --showformat='${db:Status-Status}' "$pkg" 2>&1)" = installed ]; then
+  printf "\n\e[1;36m%s\e[0m\n\n" "$step"
   sudo apt install $pkg
 fi
 
-pkg=swi-prolog
-status="$(dpkg-query -W --showformat='${db:Status-Status}' "$pkg" 2>&1)"
-if [ ! $? = 0 ] || [ ! "$status" = installed ]; then
-  echo "\n$(tput setaf 6)Install last stable Swi-Prolog$(tput sgr0)\n"
-  sudo apt install $pkg
-fi
-
-test=`swipl -g "pack_list_installed()"  -t halt| grep date_time`
-if [ -z "$test" ]
+step="Install stable Swi-Prolog repository"
+if ! apt-cache policy | grep -q swi
 then
-  echo "\n$(tput setaf 6)Install Swi-Prolog date_time package$(tput sgr0)\n"
-  swipl -g "pack_install(date_time, [interactive(false)])"  -t halt
+  printf "\n\e[1;36m%s\e[0m\n\n" "$step"
+  sudo apt-add-repository ppa:swi-prolog/stable
 fi
 
-echo "$(tput setaf 6)Done!$(tput sgr0)"
+step="Install last stable Swi-Prolog"
+pkg=swi-prolog
+if [ ! "$(dpkg-query -W --showformat='${db:Status-Status}' "$pkg" 2>&1)" = installed ]; then
+  printf "\n\e[1;36m%s\e[0m\n\n" "$step"
+  sudo apt install $pkg -y
+fi
+
+step="Install Swi-Prolog abbreviated_dates package"
+if [ "$(swipl -g "pack_list_installed()" -t halt | grep -c abbreviated_dates)" = 0 ]; then
+  printf "\n\e[1;36m%s\e[0m\n\n" "$step"
+  swipl -g "O=[interactive(false),silent(true)],pack_install(date_time,O),pack_install(abbreviated_dates,O)"  -t halt
+fi
+
+printf "\e[1;36m%s\e[0m\n" "Done!"

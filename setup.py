@@ -9,14 +9,14 @@ README = (HERE / "README.md").read_text()
 
 # This call to setup() does all the work
 setup(
-    name="fuzzy_dates",
-    version="0.2.19",
+    name="fuzzy_parser",
+    version="0.2.30",
     description="A parser for fuzzy dates",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/openengines/fuzzy_dates",
+    url="https://github.com/crgz/fuzzy_dates",
     author="Real Python",
-    author_email="openengines@protonmail.com",
+    author_email="conrado.rgz@gmail.com",
     license="MIT",
     classifiers=[
         "License :: OSI Approved :: MIT License",
@@ -28,7 +28,7 @@ setup(
     install_requires=["pytest", "pyswip"],
     entry_points={
         "console_scripts": [
-            "fuzzy_dates=fuzzy_dates.__main__:main",
+            "fuzzy_parser=fuzzy_parser.__main__:main",
         ]
     }
 )

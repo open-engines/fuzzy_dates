@@ -1,2 +1,0 @@
-include fuzzy_dates/grammar.pl
-include fuzzy_dates/facts/*.pl
