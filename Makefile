@@ -22,15 +22,11 @@ install: requirements $(PACKAGE_PATH)/fuzzy_parser ## Install the latest library
 uninstall:
 	@pip3 uninstall -y fuzzy_parser
 
-requirements: packages packs  ## Install the packages packs required for the development environment
-packages: $(PPA_PATH)/swi-prolog-ubuntu-stable-bionic.list $(SYSTEM_PACKAGE_PATH)/swipl $(SYSTEM_PACKAGE_PATH)/git
-packs: $(PACK_PATH)/tap  $(PACK_PATH)/date_time $(PACK_PATH)/abbreviated_dates
-
 release: $(PACKAGE_PATH)/twine test bump build ## Release recipe to be use from Github Actions
 	@twine upload --skip-existing --repository testpypi dist/*
 	@twine upload --skip-existing dist/*
 
-test: $(PACKAGE_PATH)/pytest $(PACKAGE_PATH)/pyswip ## Run the test suite
+test: $(PACKAGE_PATH)/pytest requirements ## Run the test suite
 	@pytest
 
 bump: $(PACKAGE_PATH)/bumpversion ## Increase the version number
@@ -39,6 +35,11 @@ bump: $(PACKAGE_PATH)/bumpversion ## Increase the version number
 build: $(PACKAGE_PATH)/twine
 	@python3 setup.py sdist bdist_wheel
 	@twine check dist/*
+
+requirements: system-packages packs  ## Install the packages packs required for the development environment
+system-packages: $(PPA_PATH)/swi-prolog-ubuntu-stable-bionic.list $(SYSTEM_PACKAGE_PATH)/swipl $(SYSTEM_PACKAGE_PATH)/git
+packages: $(PACKAGE_PATH)/pyswip
+packs: $(PACK_PATH)/tap  $(PACK_PATH)/date_time $(PACK_PATH)/abbreviated_dates
 
 GIT_REPO_URL := $(shell git config --get remote.origin.url)
 
