@@ -44,7 +44,7 @@ class TestEngine(TestCase):
         """
         (semantic, syntax) = Engine(datetime(2021, 4, 27).date()).when('21 Juin - 9 Juil.')
         self._validate([date(2021, 6, 21), date(2021, 7, 9)], semantic)
-        self._validate(['%d %B', '%d %b'], syntax)
+        self._validate(['%d %B', '%d %b.'], syntax)
 
     def test_implicit_start_month_and_abbreviated_end(self):
         """
