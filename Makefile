@@ -30,7 +30,7 @@ release: $(PACKAGE_PATH)/twine test bump build ## Release recipe to be use from 
 	@twine upload --skip-existing --repository testpypi dist/*
 	@twine upload --skip-existing dist/*
 
-test: $(PACKAGE_PATH)/pytest  ## Run the test suite
+test: $(PACKAGE_PATH)/pytest $(PACKAGE_PATH)/pyswip ## Run the test suite
 	@pytest
 
 bump: $(PACKAGE_PATH)/bumpversion ## Increase the version number
