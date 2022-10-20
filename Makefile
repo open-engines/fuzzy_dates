@@ -67,7 +67,7 @@ target/publish/workflow.svg: $(SYSTEM_PACKAGE_PATH)/mvn
 	@printf '\n\e[1;34m%-6s\e[m\n' "The diagrams has been generated"
 
 committer: $(SYSTEM_PACKAGE_PATH)/git
-	@git config --global user.email "conrado.rgz@gmail.com" && git config --global user.name "Conrado Rodriguez"
+	@git config --local user.email "conrado.rgz@gmail.com" && git config --local user.name "Conrado Rodriguez"
 
 clean: ## Remove debris
 	@rm -rfd target

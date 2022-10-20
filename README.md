@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/crgz/fuzzy_dates/main/.github/images/logo.svg" width="25%" align="right" style="border:0px solid white">
+<img src="https://raw.githubusercontent.com/crgz/fuzzy_dates/master/.github/images/logo.svg" width="25%" align="right" style="border:0px solid white">
 
 <h3 align="center">Python Parser for Abbreviated Dates</h3>
 
