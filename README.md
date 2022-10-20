@@ -15,7 +15,7 @@
     <a href="https://github.com/crgz/fuzzy_dates/graphs/contributors">
         <img src="https://img.shields.io/github/contributors/crgz/fuzzy_dates.svg" alt="stars - stars">
     </a>
-    <a href="https://github.com/crgz/fuzzy_dates/blob/main/CONTRIBUTING.md">
+    <a href="https://github.com/crgz/fuzzy_dates/blob/master/CONTRIBUTING.md">
         <img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat" alt="contributions - contributions">
     </a>
 </p>
