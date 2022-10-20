@@ -87,33 +87,31 @@ Consuming data from different sources:
 * Tooling: consuming dates from different logs / sources
 * Format transformations: when transforming dates coming from different files (PDF, CSV, etc.) to other formats (database, etc).
 
-## Operation
-Install with:
+## Operations
 
-```bash
-  pip3 install fuzzy_parser
+We are leveraging GNU Make to automate frequent actions. Please use the following command will show the available recipes
+to use for operating the local development environment:
+
+```commandline
+make help
 ```
+<details>
+  <summary>Click to see the available recipes</summary>
 
-Uninstall with:
-
-```bash
-  pip3 uninstall -y fuzzy_parser
-```
-
-### Requirements
-
-Setup Requirements with:
-```bash
-./operations/setup-requirements.sh
-```
-
-### Test
-
-Test with:
-
-```bash
-pytest
-```
+| Command      | Description                                                         |
+|--------------|---------------------------------------------------------------------|
+| help         | Print this help                                                     |
+| synchronize  | Switch to the main branch, fetch changes & delete merged branches   |
+| install      | Install the latest library release                                  |
+| requirements | Install the packages packs required for the development environment |
+| release      | Release recipe to be use from Github Actions                        |
+| test         | Run the test suite                                                  |
+| bump         | Increase the version number                                         |
+| publish      | Publish the diagrams                                                |
+| workflow     | Creates the Diagrams                                                |
+| clean        | Remove debris                                                       |
+| remove-all   | Remove packages and packs                                           |
+</details>
 
 ### Compatibility
 
