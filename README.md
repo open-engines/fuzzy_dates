@@ -78,6 +78,12 @@ For further details have a look at the underlying
 tests](https://github.com/crgz/abbreviated_dates/blob/main/prolog/abbreviated_dates.pl.plt) might give an impression on how
 to use this library.
 
+```bash
+python3 -m fuzzy_dates '21 Juin - 9 Juil.'
+[datetime.date(2022, 6, 21), datetime.date(2022, 7, 9)]
+['dm(explicit(French))', 'dm(abbreviated(French))']
+```
+
 ## Common use cases
 
 Consuming data from different sources:
@@ -91,13 +97,13 @@ Consuming data from different sources:
 Install with:
 
 ```bash
-  pip3 install fuzzy_parser
+  pip3 install fuzzy_dates
 ```
 
 Uninstall with:
 
 ```bash
-  pip3 uninstall -y fuzzy_parser
+  pip3 uninstall -y fuzzy_dates
 ```
 
 ### Requirements
@@ -122,3 +128,4 @@ Tested with SWI-Prolog version 8.2.4 on Ubuntu 20.04
 ## License
 
 Distributed under the MIT License. See `LICENSE` file for more information.
+
