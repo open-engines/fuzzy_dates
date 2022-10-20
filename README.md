@@ -3,8 +3,8 @@
 <h3 align="center">Python Parser for Abbreviated Dates</h3>
 
 <p align="center">
-    <a href="https://github.com/crgz/fuzzy_dates/actions?query=is%3Asuccess">
-        <img src="https://github.com/crgz/fuzzy_dates/actions/workflows/04-ship.yml/badge.svg" alt="Status - Status">
+    <a href="https://pypi.python.org/pypi/fuzzy_dates">
+        <img src="https://img.shields.io/pypi/v/fuzzy_dates.svg" alt="PypI - Version">
     </a>
     <a href="https://github.com/crgz/fuzzy_dates/issues">
         <img src="https://img.shields.io/github/issues/crgz/fuzzy_dates.svg" alt="issues">
