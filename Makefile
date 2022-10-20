@@ -5,7 +5,7 @@ SHELL = /bin/bash
 NAME = 'fuzzy_dates'
 TITLE = 'Python Parser for Abbreviated Dates'
 PACK_PATH = ${HOME}/.local/share/swi-prolog/pack
-PACKAGE_PATH = ${USER}/.local/bin
+PACKAGE_PATH = ${HOME}/.local/bin
 SYSTEM_PACKAGE_PATH = /usr/bin
 PPA_PATH = /etc/apt/sources.list.d
 
@@ -26,7 +26,7 @@ requirements: packages packs  ## Install the packages packs required for the dev
 packages: $(PPA_PATH)/swi-prolog-ubuntu-stable-bionic.list $(SYSTEM_PACKAGE_PATH)/swipl $(SYSTEM_PACKAGE_PATH)/git
 packs: $(PACK_PATH)/tap  $(PACK_PATH)/date_time $(PACK_PATH)/abbreviated_dates
 
-release: $(PACKAGE_PATH)/twine test uninstall bump build ## Release recipe to be use from Github Actions
+release: $(PACKAGE_PATH)/twine test bump build ## Release recipe to be use from Github Actions
 	@twine upload --skip-existing --repository testpypi dist/*
 	@twine upload --skip-existing dist/*
 
@@ -70,7 +70,9 @@ committer: $(SYSTEM_PACKAGE_PATH)/git
 	@git config --local user.email "conrado.rgz@gmail.com" && git config --local user.name "Conrado Rodriguez"
 
 clean: ## Remove debris
-	@rm -rfd target
+	@python3 setup.py clean --all
+	@rm -rfd fuzzy_parser.egg-info/
+	@rm -rfd dist/
 
 remove-all: uninstall $(SYSTEM_PACKAGE_PATH)/swipl ## Remove packages and packs
 	@swipl -g "(member(P,[cli_table,abbreviated_dates,date_time,tap]),pack_property(P,library(P)),pack_remove(P),fail);true,halt"
@@ -83,7 +85,7 @@ $(PACK_PATH)/%:
 	@swipl -qg "pack_install('$(notdir $@)',[interactive(false)]),halt"
 
 $(PACKAGE_PATH)/%: # Install packages from default repo
-	@pip3 install $(notdir $@)
+	@python -m pip install --user $(notdir $@)
 
 $(SYSTEM_PACKAGE_PATH)/swipl:
 	@sudo apt install -y swi-prolog
