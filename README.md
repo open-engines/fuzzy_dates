@@ -48,10 +48,18 @@ to parse abbreviated, ambiguous, and incomplete dates in multiple languages.
 The most straightforward way to parse dates is to use the datetime.date() function, that wraps around most of the
 functionality of the module.  This example shows a basic usage of the library to parse the date: *"11-09, št"*:
 
-```bash
-fuzzy_parser '11-09, št'
-[datetime.date(2024, 11, 9)]
-['%m %d %a']
+```python
+from datetime import datetime
+from fuzzy_parser.engine import Engine
+
+start = datetime(2021, 4, 27).date()
+(semantic, _) = Engine(start).when('11-09, št')
+for single_date in semantic:
+    print(single_date.strftime("%Y-%m-%d"))
+```
+The output will show the expected 
+```python
+2021-09-11
 ```
 
 ## How it works
