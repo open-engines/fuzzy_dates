@@ -11,6 +11,7 @@ PPA_PATH = /etc/apt/sources.list.d
 VENV = venv
 PYTHON = $(VENV)/bin/python3
 PIP = $(VENV)/bin/pip
+TWINE_PASSWORD ?= $(shell secret-tool lookup user conrado.rgz domain pypi.org )
 
 help:  ## Print this help
 	@printf '\e[1;34m\n%s\e[m\n\n' "List of available commands:"
@@ -22,8 +23,8 @@ synchronize: $(SYSTEM_PACKAGE_PATH)/git ## Switch to the main branch, fetch chan
 
 
 release: $(PACKAGE_PATH)/twine test bump build ## Release recipe to be use from Github Actions
-	@twine upload --skip-existing --repository testpypi dist/*
-	@twine upload --skip-existing dist/*
+#	@twine upload --skip-existing --repository testpypi dist/*
+	@twine -u __token__ -p $(TWINE_PASSWORD) upload --skip-existing dist/*
 
 test: $(PACKAGE_PATH)/pytest requirements ## Run the test suite
 	@$(PYTHON) -m pytest
