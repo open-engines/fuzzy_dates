@@ -10,7 +10,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="fuzzy_parser",
-    version="0.2.50",
+    version="0.2.51",
     description="A parser for fuzzy dates",
     long_description=README,
     long_description_content_type="text/markdown",
