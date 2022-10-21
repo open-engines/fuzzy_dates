@@ -8,6 +8,9 @@ PACK_PATH = ${HOME}/.local/share/swi-prolog/pack
 PACKAGE_PATH = ${HOME}/.local/bin
 SYSTEM_PACKAGE_PATH = /usr/bin
 PPA_PATH = /etc/apt/sources.list.d
+VENV = venv
+PYTHON = $(VENV)/bin/python3
+PIP = $(VENV)/bin/pip
 
 help:  ## Print this help
 	@printf '\e[1;34m\n%s\e[m\n\n' "List of available commands:"
@@ -17,29 +20,29 @@ help:  ## Print this help
 synchronize: $(SYSTEM_PACKAGE_PATH)/git ## Switch to the main branch, fetch changes & delete merged branches
 	@git checkout master && git pull && git branch --merged | egrep -v "(^\*|master)" | xargs -r git branch -d || exit 0
 
-install: requirements $(PACKAGE_PATH)/fuzzy_parser ## Install the latest library release
-
-uninstall:
-	@pip3 uninstall -y fuzzy_parser
 
 release: $(PACKAGE_PATH)/twine test bump build ## Release recipe to be use from Github Actions
 	@twine upload --skip-existing --repository testpypi dist/*
 	@twine upload --skip-existing dist/*
 
 test: $(PACKAGE_PATH)/pytest requirements ## Run the test suite
-	@pytest
+	@$(PYTHON) -m pytest
 
 bump: $(PACKAGE_PATH)/bumpversion ## Increase the version number
 	@bumpversion --allow-dirty --no-commit --no-tag --list patch
 
 build: $(PACKAGE_PATH)/twine
-	@python3 setup.py sdist bdist_wheel
+	@$(PYTHON) setup.py sdist bdist_wheel
 	@twine check dist/*
 
-requirements: system-packages packs  ## Install the packages packs required for the development environment
+requirements: system-packages packs $(VENV)/bin/activate ## Install the packages packs required for the development environment
 system-packages: $(PPA_PATH)/swi-prolog-ubuntu-stable-bionic.list $(SYSTEM_PACKAGE_PATH)/swipl $(SYSTEM_PACKAGE_PATH)/git
 packages: $(PACKAGE_PATH)/pyswip
 packs: $(PACK_PATH)/tap  $(PACK_PATH)/date_time $(PACK_PATH)/abbreviated_dates
+
+$(VENV)/bin/activate: requirements.txt
+	@python3 -m venv $(VENV)
+	@$(PIP) install -r requirements.txt
 
 GIT_REPO_URL := $(shell git config --get remote.origin.url)
 
@@ -71,9 +74,9 @@ committer: $(SYSTEM_PACKAGE_PATH)/git
 	@git config --local user.email "conrado.rgz@gmail.com" && git config --local user.name "Conrado Rodriguez"
 
 clean: ## Remove debris
-	@python3 setup.py clean --all
-	@rm -rfd fuzzy_parser.egg-info/
-	@rm -rfd dist/
+	@$(PYTHON) setup.py clean --all
+	@rm -rfd fuzzy_parser.egg-info/ dist/
+	@rm -rf __pycache__ $(VENV)
 
 remove-all: uninstall $(SYSTEM_PACKAGE_PATH)/swipl ## Remove packages and packs
 	@swipl -g "(member(P,[cli_table,abbreviated_dates,date_time,tap]),pack_property(P,library(P)),pack_remove(P),fail);true,halt"
@@ -86,7 +89,7 @@ $(PACK_PATH)/%:
 	@swipl -qg "pack_install('$(notdir $@)',[interactive(false)]),halt"
 
 $(PACKAGE_PATH)/%: # Install packages from default repo
-	@python -m pip install --user $(notdir $@)
+	@$(PIP) install --user $(notdir $@)
 
 $(SYSTEM_PACKAGE_PATH)/swipl:
 	@sudo apt install -y swi-prolog
