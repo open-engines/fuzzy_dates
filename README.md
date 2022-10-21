@@ -98,19 +98,21 @@ make help
 <details>
   <summary>Click to see the available recipes</summary>
 
-| Command      | Description                                                         |
-|--------------|---------------------------------------------------------------------|
-| help         | Print this help                                                     |
-| synchronize  | Switch to the main branch, fetch changes & delete merged branches   |
-| install      | Install the latest library release                                  |
-| requirements | Install the packages packs required for the development environment |
-| release      | Release recipe to be use from Github Actions                        |
-| test         | Run the test suite                                                  |
-| bump         | Increase the version number                                         |
-| publish      | Publish the diagrams                                                |
-| workflow     | Creates the Diagrams                                                |
-| clean        | Remove debris                                                       |
-| remove-all   | Remove packages and packs                                           |
+| Command     | Description                                                         |
+|-------------|---------------------------------------------------------------------|
+| help        | Print this help                                                     |
+| synchronize | Switch to the main branch, fetch changes & delete merged branches   |
+| test        | Run the test suite                                                  |
+| run-time    | Install the packages packs required for the development environment |
+| install     | Install the latest library release                                  |
+| uninstall   | Uninstall the latest library release                                |
+| release     | Release recipe to be use from Github Actions                        |
+| bump        | Increase the version number                                         |
+| build       | Build and check distribution packages                               |
+| publish     | Publish the diagrams                                                |
+| workflow    | Creates the Diagrams                                                |
+| remove-all  | Remove packages and packs                                           |
+| clean       | Remove debris                                                       |
 </details>
 
 ### Compatibility

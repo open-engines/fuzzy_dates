@@ -29,9 +29,9 @@ run-time: system-packages packs ## Install the packages packs required for the d
 system-packages: $(SYSTEM_PACKAGE_PATH)/swipl $(SYSTEM_PACKAGE_PATH)/git
 packs: $(PACK_PATH)/tap  $(PACK_PATH)/date_time $(PACK_PATH)/abbreviated_dates
 
-install: $(PACKAGE_PATH)/$(NAME)
+install: $(PACKAGE_PATH)/$(NAME)  ## Install the latest library release
 
-uninstall: $(PACKAGE_PATH)/$(NAME)
+uninstall: $(PACKAGE_PATH)/$(NAME)   ## Uninstall the library
 	@$(PIP) uninstall -y $(NAME)
 
 release: bump build ## Release recipe to be use from Github Actions
