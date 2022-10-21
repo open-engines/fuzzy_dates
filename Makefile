@@ -4,14 +4,17 @@ SHELL = /bin/bash
 
 NAME = 'fuzzy_dates'
 TITLE = 'Python Parser for Abbreviated Dates'
+
+VENV = venv
+PACKAGE_PATH = $(VENV)/bin
+PYTHON = $(PACKAGE_PATH)/python3
+PIP = $(PACKAGE_PATH)/pip
+
 PACK_PATH = ${HOME}/.local/share/swi-prolog/pack
-PACKAGE_PATH = ${HOME}/.local/bin
 SYSTEM_PACKAGE_PATH = /usr/bin
 PPA_PATH = /etc/apt/sources.list.d
-VENV = venv
-PYTHON = $(VENV)/bin/python3
-PIP = $(VENV)/bin/pip
-TWINE_PASSWORD ?= $(shell secret-tool lookup user conrado.rgz domain pypi.org )
+
+TWINE_PASSWORD ?= $(shell secret-tool lookup user ${USER} domain pypi.org )
 
 help:  ## Print this help
 	@printf '\e[1;34m\n%s\e[m\n\n' "List of available commands:"
@@ -22,28 +25,28 @@ synchronize: $(SYSTEM_PACKAGE_PATH)/git ## Switch to the main branch, fetch chan
 	@git checkout master && git pull && git branch --merged | egrep -v "(^\*|master)" | xargs -r git branch -d || exit 0
 
 
-release: $(PACKAGE_PATH)/twine test bump build ## Release recipe to be use from Github Actions
-#	@twine upload --skip-existing --repository testpypi dist/*
-	@twine -u __token__ -p $(TWINE_PASSWORD) upload --skip-existing dist/*
+release: bump build ## Release recipe to be use from Github Actions
+	@$(PYTHON) -m twine upload --skip-existing -u "__token__" -p $(TWINE_PASSWORD) dist/*
 
-test: $(PACKAGE_PATH)/pytest requirements ## Run the test suite
+test: $(PACKAGE_PATH)/pytest ## Run the test suite
 	@$(PYTHON) -m pytest
 
 bump: $(PACKAGE_PATH)/bumpversion ## Increase the version number
-	@bumpversion --allow-dirty --no-commit --no-tag --list patch
+	@$(PYTHON) -m bumpversion --allow-dirty --no-commit --no-tag --list patch
 
-build: $(PACKAGE_PATH)/twine
-	@$(PYTHON) setup.py sdist bdist_wheel
-	@twine check dist/*
+build: $(PACKAGE_PATH)/setuptools-rust $(PACKAGE_PATH)/build
+	@$(PYTHON) -m build --sdist --wheel
+	@$(PYTHON) -m twine --version
+	@$(PYTHON) -m twine check dist/*
 
-requirements: system-packages packs $(VENV)/bin/activate ## Install the packages packs required for the development environment
-system-packages: $(PPA_PATH)/swi-prolog-ubuntu-stable-bionic.list $(SYSTEM_PACKAGE_PATH)/swipl $(SYSTEM_PACKAGE_PATH)/git
-packages: $(PACKAGE_PATH)/pyswip
-packs: $(PACK_PATH)/tap  $(PACK_PATH)/date_time $(PACK_PATH)/abbreviated_dates
-
-$(VENV)/bin/activate: requirements.txt
+$(VENV)/bin/activate: requirements requirements.txt
 	@python3 -m venv $(VENV)
 	@$(PIP) install -r requirements.txt
+
+requirements: system-packages packs ## Install the packages packs required for the development environment
+system-packages: $(SYSTEM_PACKAGE_PATH)/swipl $(SYSTEM_PACKAGE_PATH)/swipl $(SYSTEM_PACKAGE_PATH)/git
+packages: $(PACKAGE_PATH)/pyswip
+packs: $(PACK_PATH)/tap  $(PACK_PATH)/date_time $(PACK_PATH)/abbreviated_dates
 
 GIT_REPO_URL := $(shell git config --get remote.origin.url)
 
@@ -74,12 +77,12 @@ target/publish/workflow.svg: $(SYSTEM_PACKAGE_PATH)/mvn
 committer: $(SYSTEM_PACKAGE_PATH)/git
 	@git config --local user.email "conrado.rgz@gmail.com" && git config --local user.name "Conrado Rodriguez"
 
-clean: ## Remove debris
-	@$(PYTHON) setup.py clean --all
+clean:  ## Remove debris
+	@python3 setup.py clean --all
 	@rm -rfd fuzzy_parser.egg-info/ dist/
 	@rm -rf __pycache__ $(VENV)
 
-remove-all: uninstall $(SYSTEM_PACKAGE_PATH)/swipl ## Remove packages and packs
+remove-all: $(SYSTEM_PACKAGE_PATH)/swipl ## Remove packages and packs
 	@swipl -g "(member(P,[cli_table,abbreviated_dates,date_time,tap]),pack_property(P,library(P)),pack_remove(P),fail);true,halt"
 	@pip3 uninstall -y bumpversion twine
 	@sudo sudo apt-get --purge -y autoremove swi-prolog bumpversion
@@ -89,13 +92,11 @@ remove-all: uninstall $(SYSTEM_PACKAGE_PATH)/swipl ## Remove packages and packs
 $(PACK_PATH)/%:
 	@swipl -qg "pack_install('$(notdir $@)',[interactive(false)]),halt"
 
-$(PACKAGE_PATH)/%: # Install packages from default repo
-	@$(PIP) install --user $(notdir $@)
-
-$(SYSTEM_PACKAGE_PATH)/swipl:
+$(PACKAGE_PATH)/%: $(VENV)/bin/activate # Install packages from default repo
+	@$(PYTHON) -m pip install $(notdir $@)
+$(SYSTEM_PACKAGE_PATH)/swipl: $(PPA_PATH)/swi-prolog-ubuntu-stable-bionic.list
 	@sudo apt install -y swi-prolog
 $(SYSTEM_PACKAGE_PATH)/%: # Install packages from default repo
 	@sudo apt install $(notdir $@) -y
-
 $(PPA_PATH)/swi-prolog-ubuntu-stable-bionic.list:
 	@sudo add-apt-repository -y ppa:swi-prolog/stable
