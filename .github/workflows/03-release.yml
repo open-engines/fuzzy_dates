@@ -1,0 +1,20 @@
+name: Create a new release based on current version
+on:
+  pull_request:
+    types: [ closed ]
+    branches:
+      - master
+jobs:
+  release:
+    name: Create a new release based on current version
+    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'release')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Library Repository
+        uses: actions/checkout@master
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      - name: Build a binary wheel, a source tarball, and publish distribution 📦 to PyPI
+        run: make TOKEN=${{ secrets.PYPI_API_TOKEN }} release
