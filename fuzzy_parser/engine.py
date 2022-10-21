@@ -5,7 +5,7 @@ from datetime import date
 class Engine:
 
     """
-    A minimal parser for Multilingual Incomplete & Abbreviated Dates
+    Parser for abbreviated, ambiguous, incomplete dates in multiple languages
     """
 
     def __init__(self, context=date.today()):
