@@ -122,3 +122,4 @@ Tested with SWI-Prolog version 8.2.4 on Ubuntu 20.04
 ## License
 
 Distributed under the MIT License. See `LICENSE` file for more information.
+
