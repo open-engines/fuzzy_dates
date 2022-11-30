@@ -44,40 +44,7 @@ build: $(PACKAGE_PATH)/build $(PACKAGE_PATH)/twine  ## Build and check distribut
 	@$(PYTHON) -m build --sdist --wheel
 	@$(PYTHON) -m twine check dist/*
 
-publish: diagrams ## Publish the diagrams
-	@echo $(GIT_REPO_URL) \
-	&& cd target/publish \
-	&& git init . \
-	&& git remote add github ${GIT_REPO_URL} \
-	&& git checkout -b gh-pages \
-	&& git add . \
-	&& git commit -am "Static site deploy" \
-	&& git push github gh-pages --force \
-	&& cd ../.. || exit
-
-diagrams: workflow
-
-workflow: target/publish/workflow.svg  ## Creates the workflow diagrams (TBD)
-target/publish/workflow.svg: $(SYSTEM_PACKAGE_PATH)/mvn
-	@printf '\e[1;34m%-6s\e[m\n' "Start generation of scalable C4 Diagrams"
-	@mvn exec:java@generate-diagrams -f .github/plantuml/
-	@printf '\n\e[1;34m%-6s\e[m\n' "Start generation of portable C4 Diagrams"
-	@mvn exec:java@generate-diagrams -DoutputType=png -Dlinks=0  -f .github/plantuml/
-	@printf '\n\e[1;34m%-6s\e[m\n' "The diagrams has been generated"
-
-remove-all: clean $(SYSTEM_PACKAGE_PATH)/swipl ## Remove packages and packs
-	@rm -rfd $(VENV)
-	@swipl -g "(member(P,[cli_table,abbreviated_dates,date_time,tap]),pack_property(P,library(P)),pack_remove(P),fail);true,halt"
-	@sudo sudo apt-get --purge -y autoremove swi-prolog
-	@sudo add-apt-repository --remove -y ppa:swi-prolog/stable
-	@sudo rm -f $(PPA_PATH)/swi-prolog-ubuntu-stable-bionic.list
-
-clean: ## Remove build files
-	@python3 setup.py clean --all
-	@rm -rfd fuzzy_parser.egg-info/ dist/ __pycache__
-
-# Targets for User Language packages
-$(PACKAGE_PATH)/%: $(VENV)/bin/activate # Install packages from default repo
+$(PACKAGE_PATH)/%: setup-python
 	@$(PYTHON) -m pip install $(notdir $@)
 $(VENV)/bin/activate: requirements.txt
 	@python3 -m venv $(VENV)
