@@ -25,6 +25,6 @@ class Engine:
 
     @staticmethod
     def transform(solution):
-        semantic = [eval(period.value, {'date': date}) for period in solution["Date"]]
-        syntax = [trace.value for trace in solution["Trace"]]
+        semantic = [eval(period if type(period) is str else period.value, {'date': date}) for period in solution["Date"]]
+        syntax = [trace if type(trace) is str else trace.value for trace in solution["Trace"]]
         return semantic, syntax
