@@ -124,9 +124,16 @@ clean: ## Remove build files
  /usr/bin/%: # Install packages from default repo
 	@apt install $(notdir $@) -y
 
-# Targets for Operating System repositories
-$(PPA_PATH)/swi-prolog-ubuntu-stable-bionic.list:
-	@sudo add-apt-repository -y ppa:swi-prolog/stable
+#
+# Debug
+#
+.PHONY:	debug
+debug: ## Display local make variables defined
+	@$(foreach V, $(sort $(.VARIABLES)), \
+		$(if $(filter-out environment% default automatic,\
+			$(origin $V)), \
+			$(warning $V = $($V) )) \
+	)
 
 .PHONY:	debug-all
 debug-all: ## Display all make variables defined
