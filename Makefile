@@ -94,9 +94,6 @@ setup-prolog-9: prolog-purge
 	@add-apt-repository -y ppa:swi-prolog/stable
 	@apt install -y swi-prolog
 
-$(PPA_PATH)/swi-prolog-ubuntu-stable-%.list:
-	@add-apt-repository -y ppa:swi-prolog/stable
-
 # Targets for packages
 $(PACK_PATH)/%:
 	@swipl -qg "pack_install('$(notdir $@)',[interactive(false)]),halt"
