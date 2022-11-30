@@ -100,6 +100,25 @@ $(PPA_PATH)/swi-prolog-ubuntu-stable-%.list:
 $(PACK_PATH)/%:
 	@swipl -qg "pack_install('$(notdir $@)',[interactive(false)]),halt"
 
+.PHONY:	prolog-purge
+prolog-purge: ## Warning! Remove prolog programming language
+	@apt-get --purge -y autoremove swi-prolog-nox # Purge the list file as well
+
+
+#
+# remove
+#
+remove-all: clean  /usr/bin/swipl ## Remove packages and packs
+	@rm -rfd $(VENV)
+	@swipl -g "(member(P,[cli_table,abbreviated_dates,date_time,tap]),pack_property(P,library(P)),pack_remove(P),fail);true,halt"
+	@sudo sudo apt-get --purge -y autoremove swi-prolog
+	@sudo add-apt-repository --remove -y ppa:swi-prolog/stable
+	@sudo rm -f $(PPA_PATH)/swi-prolog-ubuntu-stable-bionic.list
+
+clean: ## Remove build files
+	@python3 setup.py clean --all
+	@rm -rfd fuzzy_parser.egg-info/ dist/ __pycache__
+
 # Targets for Operating System packages
 
  /usr/bin/%: # Install packages from default repo
