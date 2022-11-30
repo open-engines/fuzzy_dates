@@ -12,6 +12,7 @@ PPA_PATH = /etc/apt/sources.list.d
 GIT_REPO_URL := $(shell git config --get remote.origin.url)
 TOKEN ?= $(shell secret-tool lookup user ${USER} domain pypi.org ) # Overridable
 
+all: help
 help:  ## Print this help
 	@printf '\e[1;34m%s: (%s)\n\n\e[m%s\n------------------------\n' $(NAME) $(TITLE) "Operation    Description"
 	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
