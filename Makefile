@@ -47,6 +47,19 @@ $(PACKAGE_PATH)/%: setup-python
 $(VENV)/bin/activate: requirements.txt
 	@python3 -m venv $(VENV)
 	@$(PIP) install -r requirements.txt
+	@touch $@
+
+#
+# setup-prolog
+#
+.PHONY:	setup-prolog
+PYSWIP_VERSION := $(shell $(VENV)/bin/pip freeze | awk -F'==' '/pyswip/{print $$2}')
+ifeq ($(shell $(VENV)/bin/pip freeze | awk -F'==' '/pyswip/{print $$2}'),0.2.10)
+    BEST_PROLOG_GOAL := setup-prolog-8
+else
+    BEST_PROLOG_GOAL := setup-prolog-9
+endif
+setup-prolog: $(BEST_PROLOG_GOAL)  ## Install the development environment for the fifth generation programming language
 
 .PHONY:	setup-prolog-8
 DISTRIBUTION_CODENAME := $(shell lsb_release -sc )
