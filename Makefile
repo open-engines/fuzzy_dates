@@ -45,7 +45,8 @@ build: $(PACKAGE_PATH)/build $(PACKAGE_PATH)/twine  ## Build and check distribut
 $(PACKAGE_PATH)/%: setup-python
 	@$(PYTHON) -m pip install $(notdir $@)
 $(VENV)/bin/activate: requirements.txt
-	@python3 -m venv $(VENV)
+	test -d $(VENV) || python3.11 -m venv $(VENV)
+	@$(PIP) install --upgrade pip
 	@$(PIP) install -r requirements.txt
 	@touch $@
 
