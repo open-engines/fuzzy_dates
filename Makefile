@@ -89,7 +89,9 @@ SWI_PROLOG_URL = 'https://launchpad.net/~swi-prolog/+archive/ubuntu/stable/+buil
 /tmp/bionic.deb:
 	@wget -q --no-verbose $(SWI_PROLOG_URL)/24099913/+files/swi-prolog-nox_8.4.3-0-bionicppa2_amd64.deb -O $@
 
-setup-prolog-9: prolog-purge $(PPA_PATH)/swi-prolog-ubuntu-stable-%.list
+.PHONY:	setup-prolog-9
+setup-prolog-9: prolog-purge
+	@add-apt-repository -y ppa:swi-prolog/stable
 	@apt install -y swi-prolog
 
 $(PPA_PATH)/swi-prolog-ubuntu-stable-%.list:
