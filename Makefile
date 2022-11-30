@@ -82,7 +82,6 @@ setup-prolog-8: prolog-purge /tmp/$(DISTRIBUTION_CODENAME).deb
 	@apt install -y /tmp/$(DISTRIBUTION_CODENAME).deb dctrl-tools # dctrl-tools provides grep-aptavail
 	@dpkg --verify swi-prolog-nox 2>/dev/null ; if [ $$? -eq 0 ]; then printf $(OK); else printf $(FAIL); fi
 	@grep-aptavail -PX swi-prolog-nox -s Description | cut -d' ' -f2-
-	@touch $@
 
 SWI_PROLOG_URL = 'https://launchpad.net/~swi-prolog/+archive/ubuntu/stable/+build'
 /tmp/focal.deb:
