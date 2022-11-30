@@ -44,6 +44,12 @@ build: $(PACKAGE_PATH)/build $(PACKAGE_PATH)/twine  ## Build and check distribut
 
 $(PACKAGE_PATH)/%: setup-python
 	@$(PYTHON) -m pip install $(notdir $@)
+
+#
+# virtual-environment
+#
+.PHONY:	setup-python
+setup-python: $(VENV)/bin/activate ## Setup python virtual environment
 $(VENV)/bin/activate: requirements.txt
 	test -d $(VENV) || python3.11 -m venv $(VENV)
 	@$(PIP) install --upgrade pip
