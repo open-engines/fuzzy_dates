@@ -9,7 +9,6 @@ PACKAGE_PATH = $(VENV)/bin
 PYTHON = $(PACKAGE_PATH)/python3
 PIP = $(PACKAGE_PATH)/pip
 PACK_PATH = ${HOME}/.local/share/swi-prolog/pack
-SYSTEM_PACKAGE_PATH = /usr/bin
 PPA_PATH = /etc/apt/sources.list.d
 GIT_REPO_URL := $(shell git config --get remote.origin.url)
 TOKEN ?= $(shell secret-tool lookup user ${USER} domain pypi.org ) # Overridable
@@ -19,14 +18,13 @@ help:  ## Print this help
 	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
 	awk 'BEGIN {FS = ":.*?## "}; {printf "\033[1;36m%-12s\033[0m %s\n", $$1, $$2}'
 
-synchronize: $(SYSTEM_PACKAGE_PATH)/git ## Switch to the main branch, fetch changes & delete merged branches
-	@git checkout master && git pull && git branch --merged | egrep -v "(^\*|master)" | xargs -r git branch -d || exit 0
-
-test: run-time $(PACKAGE_PATH)/pytest ## Run the test suite
+test: ## Run the test suite
+	$(MAKE) setup-python
+	sudo $(MAKE) setup-prolog
+	$(MAKE) packs
 	@$(PYTHON) -m pytest
 
-run-time: system-packages packs ## Install the packages packs required for the development environment
-system-packages: $(SYSTEM_PACKAGE_PATH)/swipl $(SYSTEM_PACKAGE_PATH)/git
+system-packages: /usr/bin/swipl  /usr/bin/git
 packs: $(PACK_PATH)/tap  $(PACK_PATH)/date_time $(PACK_PATH)/abbreviated_dates
 
 install: $(PACKAGE_PATH)/$(NAME)  ## Install the latest library release
@@ -55,14 +53,19 @@ $(PACK_PATH)/%:
 	@swipl -qg "pack_install('$(notdir $@)',[interactive(false)]),halt"
 
 # Targets for Operating System packages
-$(SYSTEM_PACKAGE_PATH)/swipl: $(PPA_PATH)/swi-prolog-ubuntu-stable-bionic.list
-	@sudo apt install -y swi-prolog
-$(SYSTEM_PACKAGE_PATH)/%: # Install packages from default repo
-	@sudo apt install $(notdir $@) -y
+
+ /usr/bin/%: # Install packages from default repo
+	@apt install $(notdir $@) -y
 
 # Targets for Operating System repositories
 $(PPA_PATH)/swi-prolog-ubuntu-stable-bionic.list:
 	@sudo add-apt-repository -y ppa:swi-prolog/stable
 
-committer: $(SYSTEM_PACKAGE_PATH)/git
+.PHONY:	debug-all
+debug-all: ## Display all make variables defined
+	@$(foreach V, $(sort $(.VARIABLES)), \
+		$(warning $V = $($V) ) \
+	)
+
+committer:  /usr/bin/git
 	@git config --local user.email "conrado.rgz@gmail.com" && git config --local user.name "Conrado Rodriguez"
