@@ -112,10 +112,6 @@ clean-more: clean /usr/bin/swipl ## Remove packages and packs
 	@add-apt-repository -yr ppa:swi-prolog/stable
 	@rm -f /etc/apt/sources.list.d/swi-prolog-ubuntu-stable-$(DISTRIBUTION_CODENAME).list
 
-# Targets for Operating System packages
-
- /usr/bin/%: # Install packages from default repo
-	@apt install $(notdir $@) -y
 
 #
 # Debug
