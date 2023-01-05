@@ -58,7 +58,7 @@ for single_date in semantic:
     print(single_date.strftime("%Y-%m-%d"))
 ```
 The output will show the expected 
-```python
+```shell
 2021-09-11
 ```
 
@@ -121,6 +121,12 @@ make help
 | workflow    | Creates the Diagrams                                                |
 | remove-all  | Remove packages and packs                                           |
 | clean       | Remove debris                                                       |
+
+The following command stores pypi.org token to "Upload packages" in the local key store to be used by the publish option:
+
+```bash
+secret-tool store --label='https://pypi.org/manage/account/token/' user ${USER} domain pypi.org
+```
 </details>
 
 ### Compatibility
