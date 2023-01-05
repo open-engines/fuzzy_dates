@@ -46,19 +46,6 @@ build: $(PYTHON_PATH)/build $(PYTHON_PATH)/twine  ## Build and check distributio
 	@$(PYTHON) -m build --sdist --wheel
 	@$(PYTHON) -m twine check dist/*
 
-$(PACKAGE_PATH)/%: setup-python
-	@$(PYTHON) -m pip install $(notdir $@)
-
-#
-# virtual-environment
-#
-.PHONY:	setup-python
-setup-python: $(VENV)/bin/activate ## Setup python virtual environment
-$(VENV)/bin/activate: requirements.txt
-	test -d $(VENV) || python3.11 -m venv $(VENV)
-	@$(PIP) install --upgrade pip
-	@$(PIP) install -r requirements.txt
-	@touch $@
 
 #
 # utilities
@@ -81,8 +68,31 @@ system-packages:
 /usr/bin/swipl: /etc/apt/sources.list.d/swi-prolog-ubuntu-stable-$(DISTRIBUTION_CODENAME).list
 	@apt-get -qqy install swi-prolog-nox
 
-# Targets for packages
-$(PACK_PATH)/%:
+/usr/bin/%: # Install packages from default repo
+	@apt-get -qqy install $(notdir $@) -y
+
+/etc/apt/sources.list.d/swi-prolog-ubuntu-stable-$(DISTRIBUTION_CODENAME).list:
+	apt-add-repository -y ppa:swi-prolog/stable
+
+#
+# Python virtual environment
+#
+$(VENV)/bin/activate: requirements.txt
+	test -d $(VENV) || python3 -m venv $(VENV)
+	@$(PYTHON) -m pip install --upgrade pip
+	@$(PYTHON) -m pip install --use-pep517 -r requirements.txt
+	@touch $@
+
+$(PYTHON_PATH)/%: $(VENV)/bin/activate # Install packages from default repo
+	@$(PYTHON) -m pip install $(notdir $@)
+
+#
+# prolog packs
+#
+.PHONY: packs
+PACK_PATH = ${HOME}/.local/share/swi-prolog/pack
+packs: $(PACK_PATH)/tap  $(PACK_PATH)/date_time $(PACK_PATH)/abbreviated_dates
+$(PACK_PATH)/%: # Targets for prolog packages
 	@swipl -qg "pack_install('$(notdir $@)',[interactive(false)]),halt"
 
 .PHONY:	prolog-purge
