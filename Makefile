@@ -61,42 +61,25 @@ $(VENV)/bin/activate: requirements.txt
 	@touch $@
 
 #
-# setup-prolog
+# utilities
 #
-.PHONY:	setup-prolog
-PYSWIP_VERSION := $(shell $(VENV)/bin/pip freeze | awk -F'==' '/pyswip/{print $$2}')
-ifeq ($(shell $(VENV)/bin/pip freeze | awk -F'==' '/pyswip/{print $$2}'),0.2.10)
-    BEST_PROLOG_GOAL := setup-prolog-8
-else
-    BEST_PROLOG_GOAL := setup-prolog-9
-endif
-setup-prolog: $(BEST_PROLOG_GOAL)  ## Install the development environment for the fifth generation programming language
-
-.PHONY:	setup-prolog-8
-DISTRIBUTION_CODENAME := $(shell lsb_release -sc )
-SUPPORTED_DISTRIBUTIONS := focal bionic
+DISTRIBUTION_CODENAME := $(shell awk -F'=' '/UBUNTU_CODENAME/{print $$2}' /etc/os-release)
+SUPPORTED_DISTRIBUTIONS := focal jammy
 ifeq ($(filter $(DISTRIBUTION_CODENAME),$(SUPPORTED_DISTRIBUTIONS)),)
     $(warning Terminating on detection of unsupported Ubuntu distribution: $(DISTRIBUTION_CODENAME). \
     Supported distibutions are: $(SUPPORTED_DISTRIBUTIONS))
 endif
-OK = '\e[1;34m[ Ok ]\e[m '
-FAIL = '\e[1;34m[Fail]\e[m '
-setup-prolog-8: prolog-purge /tmp/$(DISTRIBUTION_CODENAME).deb
-	@add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(DISTRIBUTION_CODENAME) main universe restricted multiverse"
-	@apt install -y /tmp/$(DISTRIBUTION_CODENAME).deb dctrl-tools # dctrl-tools provides grep-aptavail
-	@dpkg --verify swi-prolog-nox 2>/dev/null ; if [ $$? -eq 0 ]; then printf $(OK); else printf $(FAIL); fi
-	@grep-aptavail -PX swi-prolog-nox -s Description | cut -d' ' -f2-
 
-SWI_PROLOG_URL = 'https://launchpad.net/~swi-prolog/+archive/ubuntu/stable/+build'
-/tmp/focal.deb:
-	@wget -q --no-verbose $(SWI_PROLOG_URL)/24099974/+files/swi-prolog-nox_8.4.3-1-g10c53c6e3-focalppa2_amd64.deb -O $@
-/tmp/bionic.deb:
-	@wget -q --no-verbose $(SWI_PROLOG_URL)/24099913/+files/swi-prolog-nox_8.4.3-0-bionicppa2_amd64.deb -O $@
+.PHONY: utilities
+utilities: system-packages /usr/bin/swipl /usr/bin/python
 
-.PHONY:	setup-prolog-9
-setup-prolog-9: prolog-purge
-	@add-apt-repository -y ppa:swi-prolog/stable
-	@apt install -y swi-prolog
+.PHONY: system-packages
+system-packages:
+	sudo apt-get update
+	apt-get -qqy install git build-essential software-properties-common jq
+
+/usr/bin/swipl: /etc/apt/sources.list.d/swi-prolog-ubuntu-stable-$(DISTRIBUTION_CODENAME).list
+	@apt-get -qqy install swi-prolog-nox
 
 # Targets for packages
 $(PACK_PATH)/%:
