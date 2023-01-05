@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout Library Repository
         uses: actions/checkout@master
+        with:
+          ref: ${{ github.ref }}
       - name: Identify changes in source files
         uses: dorny/paths-filter@v2
         id: changes
