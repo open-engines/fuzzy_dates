@@ -36,7 +36,7 @@ $(PACK_PATH)/%:
 uninstall: $(PYTHON_PATH)/$(NAME)   ## Uninstall the library
 	@$(PIP) uninstall -y $(NAME)
 
-release: bump build ## Release recipe to be use from Github Actions
+release: build ## Release recipe to be use from Github Actions
 	@$(PYTHON) -m twine upload --skip-existing -u "__token__" -p $(TOKEN) dist/*
 
 bump: $(PYTHON_PATH)/bumpversion ## Increase the version number
