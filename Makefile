@@ -36,7 +36,7 @@ PROLOG_LIST_FILE = /etc/apt/sources.list.d/swi-prolog-ubuntu-stable-$(DISTRIBUTI
 	@apt-get -qqy install swi-prolog-nox
 	@touch $@
 $(PROLOG_LIST_FILE):
-	apt-add-repository -y ppa:swi-prolog/stable
+	@apt-add-repository -y ppa:swi-prolog/stable
 	@touch $@
 
 ARCH=$(shell dpkg --print-architecture)
@@ -86,7 +86,7 @@ $(PYTHON_PATH)/%: $(VENV)/bin/activate # Install packages from default repo
 	@$(PYTHON) -m pip install $(notdir $@)
 
 $(VENV)/bin/activate: requirements.txt
-	test -d $(VENV) || python3 -m venv $(VENV)
+	@test -d $(VENV) || python3 -m venv $(VENV)
 	@$(PYTHON) -m pip install --upgrade pip
 	@$(PYTHON) -m pip install --use-pep517 -r requirements.txt
 	@touch $@
@@ -94,7 +94,7 @@ $(VENV)/bin/activate: requirements.txt
 
 .PHONY: store-token ## Store the Github token
 store-token:
-	secret-tool store --label='github.com/crgz' user ${USER} domain github.com
+	@secret-tool store --label='github.com/crgz' user ${USER} domain github.com
 
 .PHONY: bump ## Increase the version number
 bump: export GH_TOKEN ?= $(shell secret-tool lookup user ${USER} domain github.com) # Overridable
