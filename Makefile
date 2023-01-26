@@ -80,7 +80,7 @@ VENV = venv
 PYTHON_PATH = $(VENV)/bin
 PYTHON = $(PYTHON_PATH)/python3
 test: $(PYTHON_PATH)/pytest install
-	@$(PYTHON) -m pytest
+	@$(PYTHON) -m pytest -p no:cacheprovider
 
 $(PYTHON_PATH)/%: $(VENV)/bin/activate # Install packages from default repo
 	@$(PYTHON) -m pip install $(notdir $@)
@@ -138,12 +138,8 @@ uninstall: $(PYTHON_PATH)/$(NAME)
 
 
 .PHONY: clean ## Remove debris from build target
-clean:
-	@python3 setup.py clean --all
-	@rm -rfd fuzzy_parser.egg-info/ dist/ __pycache__
-
-.PHONY: clean-more ## Remove also utilities
-clean-more: clean /usr/bin/swipl
+clean:  /usr/bin/swipl
+	@rm -rfd fuzzy_parser.egg-info/ dist/ .pytest_cache/ __pycache__
 	@rm -rfd $(VENV)
 	@swipl -g "(member(P,[abbreviated_dates,date_time,tap]),pack_property(P,library(P)),pack_remove(P),fail);true,halt"
 
