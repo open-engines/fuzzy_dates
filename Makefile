@@ -146,7 +146,7 @@ uninstall: $(PYTHON_PATH)/$(NAME)
 
 
 .PHONY: clean ## Remove debris from build target
-clean:  /usr/bin/swipl
+clean:  /usr/bin/swipl uninstall
 	@rm -rfd fuzzy_parser.egg-info/ dist/ .pytest_cache/ __pycache__
 	@rm -rfd $(VENV)
 	@swipl -g "(member(P,[abbreviated_dates,date_time,tap]),pack_property(P,library(P)),pack_remove(P),fail);true,halt"
