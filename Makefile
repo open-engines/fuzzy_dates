@@ -100,9 +100,9 @@ $(PACK_PATH)/abbreviated_dates: $(PACK_PATH)/tap  $(PACK_PATH)/date_time
 	swipl -qg "pack_remove(abbreviated_dates),pack_install('$$REMOTE',[interactive(false)]),halt(0)" -t 'halt(1)'
 	@touch $@
 
-.PHONY: store-token ## Store the Github token
-store-token:
-	@secret-tool store --label='github.com/crgz' user ${USER} domain github.com
+$(PACK_PATH)/%:
+	@swipl -qg "pack_install('$(notdir $@)',[interactive(false)]),halt"
+	@touch $@
 
 .PHONY: bump ## Increase the version number
 bump: export GH_TOKEN ?= $(shell secret-tool lookup user ${USER} domain github.com) # Overridable
