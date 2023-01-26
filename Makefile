@@ -123,28 +123,6 @@ build: $(PYTHON_PATH)/build $(PYTHON_PATH)/twine
 	@$(PYTHON) -m build --sdist --wheel
 	@$(PYTHON) -m twine check dist/*
 
-.PHONY: install	## Install the latest library release
-PACK_PATH = ${HOME}/.local/share/swi-prolog/pack
-install: packs
-
-
-.PHONY: packs ## Install the required packs. Override abbreviated_dates version with: make VERSION=v0.0.? packs
-PACK_PATH = ${HOME}/.local/share/swi-prolog/pack
-packs: $(PACK_PATH)/tap  $(PACK_PATH)/date_time $(PACK_PATH)/abbreviated_dates
-
-$(PACK_PATH)/abbreviated_dates:
-	@: $${VERSION:=$$(curl --silent 'https://api.github.com/repos/crgz/abbreviated_dates/releases/latest'|jq -r .tag_name)} ;\
-	REMOTE=https://github.com/crgz/abbreviated_dates/archive/$$VERSION.zip ;\
-	swipl -qg "pack_remove(abbreviated_dates),pack_install('$$REMOTE',[interactive(false)]),halt(0)" -t 'halt(1)'
-
-$(PACK_PATH)/%:
-	@swipl -qg "pack_install('$(notdir $@)',[interactive(false)]),halt"
-
-.PHONY: uninstall   ## Uninstall the library
-uninstall: $(PYTHON_PATH)/$(NAME)
-	@$(PIP) uninstall -y $(NAME)
-
-
 .PHONY: clean ## Remove debris from build target
 clean:  /usr/bin/swipl uninstall
 	@rm -rfd fuzzy_parser.egg-info/ dist/ .pytest_cache/ __pycache__
