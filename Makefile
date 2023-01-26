@@ -6,7 +6,7 @@ all: help
 .PHONY: help  ## Print this help
 help: about
 	@printf '\n\033[1;36m%-12s\033[0m %s\n────────────────────────\n' "Command" "Description"
-	@awk 'BEGIN {FS = " *## |: "}; /^.PHONY: /{printf "\033[1;36m%-12s\033[0m %s\n", $$2, $$3}' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = " *## |: "}; /^.PHONY: /{printf "\033[1;36m%-15s\033[0m %s\n", $$2, $$3}' $(MAKEFILE_LIST)
 
 .PHONY: about  ## Describe this tool
 NAME = 'fuzzy_parser'
@@ -24,19 +24,19 @@ ifeq ($(filter $(DISTRIBUTION_CODENAME),$(SUPPORTED_DISTRIBUTIONS)),)
     $(warning Terminating on detection of unsupported Ubuntu distribution: $(DISTRIBUTION_CODENAME). \
     Supported distibutions are: $(SUPPORTED_DISTRIBUTIONS))
 endif
-utilities: packages /usr/bin/swipl /usr/bin/python
+utilities: packages /usr/bin/swipl
 
 .PHONY: packages  ## Install packages required for the tool (Run with sudo)
 packages:
-	sudo apt-get update
-	apt-get -qqy install git bumpversion build-essential software-properties-common jq
+	@sudo apt-get update
+	@apt-get -qqy install git bumpversion build-essential software-properties-common jq python3-venv python3-pip
 
 PROLOG_LIST_FILE = /etc/apt/sources.list.d/swi-prolog-ubuntu-stable-$(DISTRIBUTION_CODENAME).list
 /usr/bin/swipl: $(PROLOG_LIST_FILE)
 	@apt-get -qqy install swi-prolog-nox
 	@touch $@
 $(PROLOG_LIST_FILE):
-	apt-add-repository -y ppa:swi-prolog/stable
+	@apt-add-repository -y ppa:swi-prolog/stable
 	@touch $@
 
 ARCH=$(shell dpkg --print-architecture)
@@ -61,6 +61,13 @@ $(GH_KEYRING):
 	@apt-get -qqy install $(notdir $@)
 	@touch $@
 
+.PHONY: clean-utilities ## Test utilities installation with: sudo make clean-utilities utilities && make test
+clean-utilities:
+	@apt-get --purge -qqy autoremove swi-prolog-nox bumpversion python3-venv python3-pip
+	@add-apt-repository --remove -y ppa:swi-prolog/stable
+	@rm -f /etc/apt/sources.list.d/swi-prolog-ubuntu-stable-$(DISTRIBUTION_CODENAME).list
+	@apt-get -y autoremove
+
 #
 # Unprivileged user rules
 #
@@ -73,13 +80,13 @@ VENV = venv
 PYTHON_PATH = $(VENV)/bin
 PYTHON = $(PYTHON_PATH)/python3
 test: $(PYTHON_PATH)/pytest install
-	@$(PYTHON) -m pytest
+	@$(PYTHON) -m pytest -p no:cacheprovider
 
 $(PYTHON_PATH)/%: $(VENV)/bin/activate # Install packages from default repo
 	@$(PYTHON) -m pip install $(notdir $@)
 
 $(VENV)/bin/activate: requirements.txt
-	test -d $(VENV) || python3 -m venv $(VENV)
+	@test -d $(VENV) || python3 -m venv $(VENV)
 	@$(PYTHON) -m pip install --upgrade pip
 	@$(PYTHON) -m pip install --use-pep517 -r requirements.txt
 	@touch $@
@@ -87,7 +94,7 @@ $(VENV)/bin/activate: requirements.txt
 
 .PHONY: store-token ## Store the Github token
 store-token:
-	secret-tool store --label='github.com/crgz' user ${USER} domain github.com
+	@secret-tool store --label='github.com/crgz' user ${USER} domain github.com
 
 .PHONY: bump ## Increase the version number
 bump: export GH_TOKEN ?= $(shell secret-tool lookup user ${USER} domain github.com) # Overridable
@@ -113,7 +120,7 @@ PACK_PATH = ${HOME}/.local/share/swi-prolog/pack
 install: packs
 
 
-.PHONY: packs ## Install the required packs
+.PHONY: packs ## Install the required packs. Override abbreviated_dates version with: make VERSION=v0.0.? packs
 PACK_PATH = ${HOME}/.local/share/swi-prolog/pack
 packs: $(PACK_PATH)/tap  $(PACK_PATH)/date_time $(PACK_PATH)/abbreviated_dates
 
@@ -131,18 +138,10 @@ uninstall: $(PYTHON_PATH)/$(NAME)
 
 
 .PHONY: clean ## Remove debris from build target
-clean:
-	@python3 setup.py clean --all
-	@rm -rfd fuzzy_parser.egg-info/ dist/ __pycache__
-
-.PHONY: clean-more ## Remove also utilities
-clean-more: clean /usr/bin/swipl
+clean:  /usr/bin/swipl
+	@rm -rfd fuzzy_parser.egg-info/ dist/ .pytest_cache/ __pycache__
 	@rm -rfd $(VENV)
 	@swipl -g "(member(P,[abbreviated_dates,date_time,tap]),pack_property(P,library(P)),pack_remove(P),fail);true,halt"
-	@apt-get --purge -qqy autoremove swi-prolog-nox bumpversion
-	@add-apt-repository --remove -y ppa:swi-prolog/stable
-	@rm -f /etc/apt/sources.list.d/swi-prolog-ubuntu-stable-$(DISTRIBUTION_CODENAME).list
-	@apt-get -y autoremove
 
 .PHONY: committer ## config committer credentials
 committer:
