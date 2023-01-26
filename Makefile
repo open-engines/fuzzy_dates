@@ -79,7 +79,7 @@ synchronize: /usr/bin/git
 VENV = venv
 PYTHON_PATH = $(VENV)/bin
 PYTHON = $(PYTHON_PATH)/python3
-test: $(PYTHON_PATH)/pytest install
+test: $(PYTHON_PATH)/pytest parser
 	@$(PYTHON) -m pytest -p no:cacheprovider
 
 $(PYTHON_PATH)/%: $(VENV)/bin/activate # Install packages from default repo
@@ -91,6 +91,14 @@ $(VENV)/bin/activate: requirements.txt
 	@$(PYTHON) -m pip install --use-pep517 -r requirements.txt
 	@touch $@
 
+.PHONY: parser ## Install the latest parser release. Override parser version with make VERSION=v0.0.? parser
+PACK_PATH = ${HOME}/.local/share/swi-prolog/pack
+parser: $(PACK_PATH)/abbreviated_dates
+$(PACK_PATH)/abbreviated_dates: $(PACK_PATH)/tap  $(PACK_PATH)/date_time
+	@: $${VERSION:=$$(curl --silent 'https://api.github.com/repos/crgz/abbreviated_dates/releases/latest'|jq -r .tag_name)} ;\
+	REMOTE=https://github.com/crgz/abbreviated_dates/archive/$$VERSION.zip ;\
+	swipl -qg "pack_remove(abbreviated_dates),pack_install('$$REMOTE',[interactive(false)]),halt(0)" -t 'halt(1)'
+	@touch $@
 
 .PHONY: store-token ## Store the Github token
 store-token:
