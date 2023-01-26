@@ -118,6 +118,7 @@ bump: /usr/bin/bumpversion committer
 TOKEN ?= $(shell secret-tool lookup user ${USER} domain pypi.org ) # Overridable
 release: build
 	@$(PYTHON) -m twine upload --skip-existing -u "__token__" -p $(TOKEN) dist/*
+
 .PHONY: build ## Build and check distribution packages
 build: $(PYTHON_PATH)/build $(PYTHON_PATH)/twine
 	@$(PYTHON) -m build --sdist --wheel
