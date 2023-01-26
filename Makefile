@@ -151,6 +151,14 @@ clean:  /usr/bin/swipl
 	@rm -rfd $(VENV)
 	@swipl -g "(member(P,[abbreviated_dates,date_time,tap]),pack_property(P,library(P)),pack_remove(P),fail);true,halt"
 
+.PHONY: uninstall   ## Uninstall the library
+uninstall: $(PYTHON_PATH)/$(NAME)
+	@$(PIP) uninstall -y $(NAME)
+
+.PHONY: store-token ## Store the Github token
+store-token:
+	@secret-tool store --label='github.com/crgz' user ${USER} domain github.com
+
 .PHONY: committer ## config committer credentials
 committer:
 	@git config --global user.email "conrado.rgz@gmail.com"
