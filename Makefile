@@ -61,6 +61,13 @@ $(GH_KEYRING):
 	@apt-get -qqy install $(notdir $@)
 	@touch $@
 
+.PHONY: clean-utilities ## Test utilities installation with: sudo make clean-utilities utilities && make test
+clean-utilities:
+	@apt-get --purge -qqy autoremove swi-prolog-nox bumpversion python3-venv python3-pip
+	@add-apt-repository --remove -y ppa:swi-prolog/stable
+	@rm -f /etc/apt/sources.list.d/swi-prolog-ubuntu-stable-$(DISTRIBUTION_CODENAME).list
+	@apt-get -y autoremove
+
 #
 # Unprivileged user rules
 #
@@ -139,10 +146,6 @@ clean:
 clean-more: clean /usr/bin/swipl
 	@rm -rfd $(VENV)
 	@swipl -g "(member(P,[abbreviated_dates,date_time,tap]),pack_property(P,library(P)),pack_remove(P),fail);true,halt"
-	@apt-get --purge -qqy autoremove swi-prolog-nox bumpversion
-	@add-apt-repository --remove -y ppa:swi-prolog/stable
-	@rm -f /etc/apt/sources.list.d/swi-prolog-ubuntu-stable-$(DISTRIBUTION_CODENAME).list
-	@apt-get -y autoremove
 
 .PHONY: committer ## config committer credentials
 committer:
