@@ -24,12 +24,12 @@ ifeq ($(filter $(DISTRIBUTION_CODENAME),$(SUPPORTED_DISTRIBUTIONS)),)
     $(warning Terminating on detection of unsupported Ubuntu distribution: $(DISTRIBUTION_CODENAME). \
     Supported distibutions are: $(SUPPORTED_DISTRIBUTIONS))
 endif
-utilities: packages /usr/bin/swipl /usr/bin/python
+utilities: packages /usr/bin/swipl
 
 .PHONY: packages  ## Install packages required for the tool (Run with sudo)
 packages:
-	sudo apt-get update
-	apt-get -qqy install git bumpversion build-essential software-properties-common jq
+	@sudo apt-get update
+	@apt-get -qqy install git bumpversion build-essential software-properties-common jq python3-venv python3-pip
 
 PROLOG_LIST_FILE = /etc/apt/sources.list.d/swi-prolog-ubuntu-stable-$(DISTRIBUTION_CODENAME).list
 /usr/bin/swipl: $(PROLOG_LIST_FILE)
