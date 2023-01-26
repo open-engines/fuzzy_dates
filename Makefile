@@ -6,7 +6,7 @@ all: help
 .PHONY: help  ## Print this help
 help: about
 	@printf '\n\033[1;36m%-12s\033[0m %s\n────────────────────────\n' "Command" "Description"
-	@awk 'BEGIN {FS = " *## |: "}; /^.PHONY: /{printf "\033[1;36m%-12s\033[0m %s\n", $$2, $$3}' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = " *## |: "}; /^.PHONY: /{printf "\033[1;36m%-15s\033[0m %s\n", $$2, $$3}' $(MAKEFILE_LIST)
 
 .PHONY: about  ## Describe this tool
 NAME = 'fuzzy_parser'
