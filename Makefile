@@ -120,7 +120,7 @@ PACK_PATH = ${HOME}/.local/share/swi-prolog/pack
 install: packs
 
 
-.PHONY: packs ## Install the required packs
+.PHONY: packs ## Install the required packs. Override abbreviated_dates version with: make VERSION=v0.0.? packs
 PACK_PATH = ${HOME}/.local/share/swi-prolog/pack
 packs: $(PACK_PATH)/tap  $(PACK_PATH)/date_time $(PACK_PATH)/abbreviated_dates
 
