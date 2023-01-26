@@ -12,9 +12,7 @@ jobs:
     steps:
       - name: Checkout Library Repository
         uses: actions/checkout@master
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.10"
+      - name: Ensure that all necessary packages for the workflow are installed before proceeding
+        run: sudo make packages
       - name: Build a binary wheel, a source tarball, and publish distribution 📦 to PyPI
         run: make TOKEN=${{ secrets.PYPI_API_TOKEN }} release
