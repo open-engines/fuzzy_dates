@@ -61,7 +61,7 @@ $(GH_KEYRING):
 	@apt-get -qqy install $(notdir $@)
 	@touch $@
 
-.PHONY: clean-utilities ## Test utilities installation with: sudo make clean-utilities utilities && make test
+.PHONY: clean-utilities ## Test utilities installation with sudo make clean-utilities utilities && make test
 clean-utilities:
 	@apt-get --purge -qqy autoremove swi-prolog-nox bumpversion python3-venv python3-pip
 	@add-apt-repository --remove -y ppa:swi-prolog/stable
